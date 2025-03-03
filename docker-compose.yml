@@ -38,12 +38,14 @@ services:
     container_name: loki
     volumes:
       - ./loki-config.yml:/loki-config.yml
+      - ./loki-data:/loki/data  # Mount persistent storage
     command: -config.file=/loki-config.yml
     ports:
       - "3100:3100"
     networks:
       - monitoring
     restart: unless-stopped
+
 
   ## Tempo: Tracing (APM)
   tempo:
