@@ -19,16 +19,16 @@ scrape_configs:
     static_configs:
       - targets: ['vale-stage.zennerslab.com']
 
-  - job_name: 'prod-app'
-    metrics_path: /metrics
-    scheme: https
-    static_configs:
-      - targets: ['valeloan.ph']
+  # - job_name: 'prod-app'
+  #   metrics_path: /metrics
+  #   scheme: https
+  #   static_configs:
+  #     - targets: ['valeloan.ph']
 
-  - job_name: 'local-app'
-    metrics_path: /metrics
-    static_configs:
-      - targets: ['localhost:8000']
+  # - job_name: 'local-app'
+  #   metrics_path: /metrics
+  #   static_configs:
+  #     - targets: ['localhost:8000']
 
   - job_name: 'blackbox-http-staging'
     metrics_path: /probe
@@ -36,10 +36,10 @@ scrape_configs:
       module: [http_2xx]
     static_configs:
       - targets: ['vale-stage.zennerslab.com']
-      - targets: ['localhost:8000']
+      # - targets: ['localhost:8000']
       - targets: ['valeloan.ph']
       - targets: ['shop.insularhealthcare.com.ph']
-      - targets: ['finder.tariffcommission.gov.ph']
+      # - targets: ['finder.tariffcommission.gov.ph']
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target

@@ -25,12 +25,5 @@ schema_config:
         prefix: index_
         period: 24h
 
-storage_config:
-  filesystem:
-    directory: /loki/data  # Persistent storage fix
-
-limits_config:
-  volume_enabled: true
-
 ruler:
   alertmanager_url: http://localhost:9093
