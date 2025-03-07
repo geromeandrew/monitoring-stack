@@ -16,6 +16,21 @@ services:
       - monitoring
     restart: unless-stopped
 
+  ## Prometheus: Scrapes metrics from various services
+  prometheus2:
+    image: prom/prometheus:latest
+    container_name: prometheus2
+    volumes:
+      - ./prometheus2.yml:/etc/prometheus/prometheus2.yml
+    command:
+      - --config.file=/etc/prometheus/prometheus2.yml
+      - "--web.listen-address=0.0.0.0:9090"
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring
+    restart: unless-stopped
+
 
   ## Grafana: Dashboard for visualization
   grafana:
