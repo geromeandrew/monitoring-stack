@@ -24,9 +24,9 @@ services:
       - ./prometheus2.yml:/etc/prometheus/prometheus2.yml
     command:
       - --config.file=/etc/prometheus/prometheus2.yml
-      - "--web.listen-address=0.0.0.0:9090"
+      - "--web.listen-address=0.0.0.0:9091"
     ports:
-      - "9090:9090"
+      - "9091:9091"
     networks:
       - monitoring
     restart: unless-stopped
@@ -38,13 +38,12 @@ services:
       - ./prometheus3.yml:/etc/prometheus/prometheus3.yml
     command:
       - --config.file=/etc/prometheus/prometheus3.yml
-      - "--web.listen-address=0.0.0.0:9090"
+      - "--web.listen-address=0.0.0.0:9092"
     ports:
-      - "9090:9090"
+      - "9092:9092"
     networks:
       - monitoring
     restart: unless-stopped
-
 
   ## Grafana: Dashboard for visualization
   grafana:
@@ -74,7 +73,6 @@ services:
       - monitoring
     restart: unless-stopped
 
-
   ## Tempo: Tracing (APM)
   tempo:
     image: grafana/tempo:latest
@@ -97,6 +95,7 @@ services:
     networks:
       - monitoring
     restart: unless-stopped
+
   ## Node Exporter: Server Resource Monitoring (for staging)
   # node-exporter:
   #   image: prom/node-exporter:latest
