@@ -31,6 +31,20 @@ services:
       - monitoring
     restart: unless-stopped
 
+  prometheus3:
+    image: prom/prometheus:latest
+    container_name: prometheus3
+    volumes:
+      - ./prometheus3.yml:/etc/prometheus/prometheus3.yml
+    command:
+      - --config.file=/etc/prometheus/prometheus3.yml
+      - "--web.listen-address=0.0.0.0:9090"
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring
+    restart: unless-stopped
+
 
   ## Grafana: Dashboard for visualization
   grafana:
