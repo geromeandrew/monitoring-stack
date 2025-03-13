@@ -21,7 +21,7 @@ WORKDIR /app
 COPY . .
 
 # Expose necessary ports
-EXPOSE 9090 3000 3100 3200 9115
+EXPOSE 9090 3000 3100 3200 9115 9091 9092 9093
 
 # Start monitoring stack
 CMD ["docker-compose", "up", "-d", "--remove-orphans"]
