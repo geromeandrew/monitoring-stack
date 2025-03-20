@@ -37,7 +37,7 @@ scrape_configs:
     static_configs:
       - targets: ['vale-stage.zennerslab.com']
       # - targets: ['localhost:8000']
-      - targets: ['valeloan.ph']
+      # - targets: ['valeloan.ph']
       - targets: ['shop.insularhealthcare.com.ph']
       # - targets: ['finder.tariffcommission.gov.ph']
     relabel_configs:
