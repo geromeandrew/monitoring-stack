@@ -61,8 +61,6 @@ services:
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin123
     volumes:
       - grafana-data:/var/lib/grafana  # Keeps persistent data
       - ./grafana:/etc/grafana  # Mounts the entire grafana config directory
