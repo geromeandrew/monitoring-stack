@@ -68,6 +68,20 @@ services:
     networks:
       - monitoring
     restart: unless-stopped
+
+  frontend:
+    restart: unless-stopped
+    image: staticfloat/nginx-certbot
+    ports:
+      - 80:80/tcp
+      - 443:443/tcp
+    environment:
+      CERTBOT_EMAIL: michael.cu@iainnovations.com
+    volumes:
+      - ./conf.d:/etc/nginx/user.conf.d:ro
+      - letsencrypt:/etc/letsencrypt
+      - static_volume:/app/staticfiles
+      - ./app/templates/pages:/usr/share/nginx/html/pages:ro
   ## Node Exporter: Server Resource Monitoring (for staging)
   # node-exporter:
   #   image: prom/node-exporter:latest
