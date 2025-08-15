@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   ## Prometheus: Scrapes metrics from various services
   prometheus:
@@ -167,3 +165,5 @@ networks:
 
 volumes:
   grafana-data:
+  letsencrypt:
+  static_volume:
