@@ -1,0 +1,49 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9091']
+
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['112.198.21.66:9100']
+
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['112.198.21.66:8080']
+
+  # - job_name: 'staging-app'
+  #   metrics_path: /metrics
+  #   static_configs:
+  #     - targets: ['vale-stage.zennerslab.com']
+
+  # - job_name: 'prod-app'
+  #   metrics_path: /metrics
+  #   scheme: https
+  #   static_configs:
+  #     - targets: ['valeloan.ph']
+
+  - job_name: 'local-app'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['112.198.21.66:8000']
+
+  - job_name: 'blackbox-http-staging'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets: ['vale-stage.zennerslab.com']
+      # - targets: ['localhost:8000']
+      - targets: ['valeloan.ph']
+      - targets: ['shop.insularhealthcare.com.ph']
+      # - targets: ['finder.tariffcommission.gov.ph']
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox:9115
