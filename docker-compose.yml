@@ -8,6 +8,8 @@ services:
     command:
       - --config.file=/etc/prometheus/prometheus.yml
       - "--web.listen-address=0.0.0.0:9090"
+      - "--web.external-url=/prometheus"
+      - "--web.route-prefix=/"
     ports:
       - "9090:9090"
     networks:
@@ -71,7 +73,7 @@ services:
     restart: unless-stopped
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin123
-      - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s:/grafana
+      - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s/grafana
       - GF_SERVER_SERVE_FROM_SUB_PATH=true
 
   ## Loki: Log aggregation
@@ -121,6 +123,8 @@ services:
     volumes:
       - ./conf.d:/etc/nginx/user.conf.d:ro
       - letsencrypt:/etc/letsencrypt
+      - static_volume:/app/staticfiles
+      - ./app/templates/pages:/usr/share/nginx/html/pages:ro
     networks:
       - monitoring
   ## Node Exporter: Server Resource Monitoring (for staging)
