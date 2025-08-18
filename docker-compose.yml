@@ -73,7 +73,8 @@ services:
     restart: unless-stopped
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin123
-      - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s/grafana
+      - GF_SERVER_DOMAIN=ops.zennerslab.com
+      - GF_SERVER_ROOT_URL=https://ops.zennerslab.com/grafana/
       - GF_SERVER_SERVE_FROM_SUB_PATH=true
 
   ## Loki: Log aggregation
