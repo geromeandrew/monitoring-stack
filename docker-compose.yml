@@ -64,8 +64,8 @@ services:
     image: grafana/grafana:latest
     container_name: grafana
     volumes:
-      - grafana-data:/var/lib/grafana  # Keeps persistent data
-      - ./grafana:/etc/grafana  # Mounts the entire grafana config directory
+      - grafana-data:/var/lib/grafana
+      - ./grafana:/etc/grafana
     ports:
       - "3000:3000"
     networks:
@@ -73,10 +73,7 @@ services:
     restart: unless-stopped
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin123
-      - GF_SERVER_DOMAIN=ops.zennerslab.com
       - GF_SERVER_ROOT_URL=https://ops.zennerslab.com/grafana/
-      - GF_SERVER_PROTOCOL=https
-      - GF_SERVER_ENFORCE_DOMAIN=true
       - GF_SERVER_SERVE_FROM_SUB_PATH=true
 
   ## Loki: Log aggregation
