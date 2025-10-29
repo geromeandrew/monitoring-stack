@@ -123,11 +123,11 @@ services:
 
   frontend:
     image: staticfloat/nginx-certbot
-    container_name: frontend 
+    container_name: frontend
     restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
+    expose:
+      - "80"
+      - "443"
     environment:
       CERTBOT_EMAIL: michael.cu@iainnovations.com
     volumes:
@@ -137,10 +137,13 @@ services:
       - ./app/templates/pages:/usr/share/nginx/html/pages:ro
     networks:
       - monitoring
+      - frontend_network
 
 networks:
   monitoring:
     driver: bridge
+  frontend_network:
+    external: true
 
 volumes:
   grafana-data:
