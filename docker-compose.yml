@@ -4,27 +4,30 @@ services:
     image: prom/prometheus:latest
     container_name: prometheus
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
     command:
       - --config.file=/etc/prometheus/prometheus.yml
-      - "--web.listen-address=0.0.0.0:9090"
-      - "--web.external-url=/prometheus"
-      - "--web.route-prefix=/"
+      - --storage.tsdb.path=/prometheus
+      - --web.listen-address=0.0.0.0:9090
+      - --web.external-url=/prometheus
+      - --web.route-prefix=/
     ports:
       - "9090:9090"
     networks:
       - monitoring
     restart: unless-stopped
 
-  ## Prometheus: Scrapes metrics from various services
   prometheus2:
     image: prom/prometheus:latest
     container_name: prometheus2
     volumes:
-      - ./prometheus2.yml:/etc/prometheus/prometheus2.yml
+      - prometheus2-data:/prometheus
+      - ./prometheus2.yml:/etc/prometheus/prometheus.yml:ro
     command:
-      - --config.file=/etc/prometheus/prometheus2.yml
-      - "--web.listen-address=0.0.0.0:9091"
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.listen-address=0.0.0.0:9091
     ports:
       - "9091:9091"
     networks:
@@ -35,10 +38,12 @@ services:
     image: prom/prometheus:latest
     container_name: prometheus3
     volumes:
-      - ./prometheus3.yml:/etc/prometheus/prometheus3.yml
+      - prometheus3-data:/prometheus
+      - ./prometheus3.yml:/etc/prometheus/prometheus.yml:ro
     command:
-      - --config.file=/etc/prometheus/prometheus3.yml
-      - "--web.listen-address=0.0.0.0:9092"
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.listen-address=0.0.0.0:9092
     ports:
       - "9092:9092"
     networks:
@@ -49,10 +54,12 @@ services:
     image: prom/prometheus:latest
     container_name: prometheus-prod
     volumes:
-      - ./prometheus-prod.yml:/etc/prometheus/prometheus-prod.yml
+      - prometheus-prod-data:/prometheus
+      - ./prometheus-prod.yml:/etc/prometheus/prometheus.yml:ro
     command:
-      - --config.file=/etc/prometheus/prometheus-prod.yml
-      - "--web.listen-address=0.0.0.0:9093"
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.listen-address=0.0.0.0:9093
     ports:
       - "9093:9093"
     networks:
@@ -81,7 +88,8 @@ services:
     image: grafana/loki:latest
     container_name: loki
     volumes:
-      - ./loki-config.yml:/loki-config.yml
+      - loki-data:/loki
+      - ./loki-config.yml:/loki-config.yml:ro
     command: -config.file=/loki-config.yml
     ports:
       - "3100:3100"
@@ -94,8 +102,9 @@ services:
     image: grafana/tempo:latest
     container_name: tempo
     volumes:
-      - ./tempo-config.yml:/tempo-config.yml
-    command: [ "-config.file=/tempo-config.yml" ]
+      - tempo-data:/var/tempo
+      - ./tempo-config.yml:/tempo-config.yml:ro
+    command: ["-config.file=/tempo-config.yml"]
     ports:
       - "3200:3200"
     networks:
@@ -113,11 +122,12 @@ services:
     restart: unless-stopped
 
   frontend:
-    restart: unless-stopped
     image: staticfloat/nginx-certbot
+    container_name: frontend
+    restart: unless-stopped
     ports:
-      - 80:80/tcp
-      - 443:443/tcp
+      - "80:80"
+      - "443:443"
     environment:
       CERTBOT_EMAIL: michael.cu@iainnovations.com
     volumes:
@@ -127,43 +137,6 @@ services:
       - ./app/templates/pages:/usr/share/nginx/html/pages:ro
     networks:
       - monitoring
-  ## Node Exporter: Server Resource Monitoring (for staging)
-  # node-exporter:
-  #   image: prom/node-exporter:latest
-  #   container_name: node-exporter
-  #   ports:
-  #     - "9100:9100"
-  #   networks:
-  #     - monitoring
-  #   restart: unless-stopped
-
-  # ## cAdvisor: Container Metrics (for staging)
-  # cadvisor:
-  #   image: gcr.io/cadvisor/cadvisor:latest
-  #   container_name: cadvisor
-  #   ports:
-  #     - "8080:8080"
-  #   volumes:
-  #     - /:/rootfs:ro
-  #     - /var/run:/var/run:rw
-  #     - /sys:/sys:ro
-  #     - /var/lib/docker/:/var/lib/docker:ro
-  #   networks:
-  #     - monitoring
-  #   restart: unless-stopped
-
-  ## Promtail: Log Collection (for staging)
-  # promtail:
-  #   image: grafana/promtail:latest
-  #   container_name: promtail
-  #   volumes:
-  #     - /var/lib/docker/containers:/var/lib/docker/containers:ro
-  #     - /var/log:/var/log
-  #     - ./promtail-config.yml:/etc/promtail/promtail-config.yml
-  #   command: -config.file=/etc/promtail/promtail-config.yml
-  #   networks:
-  #     - monitoring
-  #   restart: unless-stopped
 
 networks:
   monitoring:
@@ -171,5 +144,11 @@ networks:
 
 volumes:
   grafana-data:
+  prometheus-data:
+  prometheus2-data:
+  prometheus3-data:
+  prometheus-prod-data:
+  loki-data:
+  tempo-data:
   letsencrypt:
   static_volume:
