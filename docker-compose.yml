@@ -124,6 +124,7 @@ services:
   frontend:
     image: staticfloat/nginx-certbot
     container_name: frontend
+    entrypoint: ["/bin/bash", "-c", "nginx -g 'daemon off;'"]
     restart: unless-stopped
     ports:
       - "80:80"
