@@ -12,8 +12,8 @@ services:
       - --web.listen-address=0.0.0.0:9090
       - --web.external-url=/prometheus
       - --web.route-prefix=/
-    ports:
-      - "9090:9090"
+    expose:
+      - 9090
     networks:
       - monitoring
     restart: unless-stopped
@@ -28,8 +28,8 @@ services:
       - --config.file=/etc/prometheus/prometheus.yml
       - --storage.tsdb.path=/prometheus
       - --web.listen-address=0.0.0.0:9091
-    ports:
-      - "9091:9091"
+    expose:
+      - 9091
     networks:
       - monitoring
     restart: unless-stopped
@@ -44,8 +44,8 @@ services:
       - --config.file=/etc/prometheus/prometheus.yml
       - --storage.tsdb.path=/prometheus
       - --web.listen-address=0.0.0.0:9092
-    ports:
-      - "9092:9092"
+    expose:
+      - 9092
     networks:
       - monitoring
     restart: unless-stopped
@@ -60,8 +60,8 @@ services:
       - --config.file=/etc/prometheus/prometheus.yml
       - --storage.tsdb.path=/prometheus
       - --web.listen-address=0.0.0.0:9093
-    ports:
-      - "9093:9093"
+    expose:
+      - 9093
     networks:
       - monitoring
     restart: unless-stopped
@@ -73,8 +73,8 @@ services:
     volumes:
       - grafana-data:/var/lib/grafana
       - ./grafana:/etc/grafana
-    ports:
-      - "3000:3000"
+    expose:
+      - 3000
     networks:
       - monitoring
     restart: unless-stopped
@@ -91,8 +91,8 @@ services:
       - loki-data:/loki
       - ./loki-config.yml:/loki-config.yml:ro
     command: -config.file=/loki-config.yml
-    ports:
-      - "3100:3100"
+    expose:
+      - 3100
     networks:
       - monitoring
     restart: unless-stopped
@@ -105,8 +105,8 @@ services:
       - tempo-data:/var/tempo
       - ./tempo-config.yml:/tempo-config.yml:ro
     command: ["-config.file=/tempo-config.yml"]
-    ports:
-      - "3200:3200"
+    expose:
+      - 3200
     networks:
       - monitoring
     restart: unless-stopped
@@ -115,19 +115,19 @@ services:
   blackbox:
     image: prom/blackbox-exporter:latest
     container_name: blackbox
-    ports:
-      - "9115:9115"
+    expose:
+      - 9115
     networks:
       - monitoring
     restart: unless-stopped
 
-  frontend:
+  nginx:
     image: staticfloat/nginx-certbot
-    container_name: frontend
+    container_name: ops_nginx
     restart: unless-stopped
-    expose:
-      - "80"
-      - "443"
+    ports:
+      - 80:80/tcp
+      - 443:443/tcp
     environment:
       CERTBOT_EMAIL: michael.cu@iainnovations.com
     volumes:
@@ -138,11 +138,14 @@ services:
     networks:
       - monitoring
       - frontend_network
+      - public_network
 
 networks:
   monitoring:
     driver: bridge
   frontend_network:
+    external: true
+  public_network:
     external: true
 
 volumes:
