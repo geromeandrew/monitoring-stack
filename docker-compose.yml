@@ -104,7 +104,7 @@ services:
     volumes:
       - tempo-data:/var/tempo
       - ./tempo-config.yml:/tempo-config.yml:ro
-    command: ["-config.file=/tempo-config.yml"]
+    command: [ "-config.file=/tempo-config.yml" ]
     expose:
       - 3200
     networks:
@@ -121,13 +121,12 @@ services:
       - monitoring
     restart: unless-stopped
 
-  nginx:
+  ops_nginx:
     image: staticfloat/nginx-certbot
     container_name: ops_nginx
     restart: unless-stopped
-    ports:
-      - 80:80/tcp
-      - 443:443/tcp
+    expose:
+      - "80"
     environment:
       CERTBOT_EMAIL: michael.cu@iainnovations.com
     volumes:
@@ -137,15 +136,12 @@ services:
       - ./app/templates/pages:/usr/share/nginx/html/pages:ro
     networks:
       - monitoring
-      - frontend_network
-      - public_network
+      - nginx_network
 
 networks:
   monitoring:
     driver: bridge
-  frontend_network:
-    external: true
-  public_network:
+  nginx_network:
     external: true
 
 volumes:
