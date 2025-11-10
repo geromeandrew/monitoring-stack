@@ -83,6 +83,13 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin123
       - GF_SERVER_ROOT_URL=https://ops.zennerslab.com/
       - GF_SERVER_SERVE_FROM_SUB_PATH=false
+      - GF_SERVER_DOMAIN=ops.zennerslab.com
+      - GF_SERVER_PROTOCOL=http
+      - GF_SERVER_HTTP_PORT=3000
+      - GF_SERVER_ENABLE_GZIP=true
+      - GF_SERVER_ROUTER_LOGGING=true
+      - GF_SERVER_ENFORCE_DOMAIN=false
+
 
   ## Loki: Log aggregation
   loki:
@@ -123,16 +130,13 @@ services:
     restart: unless-stopped
 
   ops_nginx:
-    image: staticfloat/nginx-certbot
+    image: nginx:latest
     container_name: ops_nginx
     restart: unless-stopped
     expose:
       - "80"
-    environment:
-      CERTBOT_EMAIL: michael.cu@iainnovations.com
     volumes:
-      - ./conf.d:/etc/nginx/user.conf.d:ro
-      - letsencrypt:/etc/letsencrypt
+      - ./conf.d:/etc/nginx/conf.d:ro
       - static_volume:/app/staticfiles
       - ./app/templates/pages:/usr/share/nginx/html/pages:ro
     networks:
